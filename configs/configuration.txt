@@ -1,0 +1,6 @@
+[Parameters]
+active_ransomware: revil.txt
+decryption_start: C:\Users\nw\Desktop\REvil
+delete_ransom_files: False
+key_path: C:\Users\nw\Desktop\REvil\keys
+log_file: C:\Users\nw\Desktop\REvil\logs.txt
