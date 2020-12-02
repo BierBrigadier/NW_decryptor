@@ -40,7 +40,7 @@ if __name__ == '__main__':
         # Execute tasks:
         for method in methodology:
             LogUtils.write_log(log_file, method + " start.")
-
+            print(method + " start")
             # If method fails, log it and skip file
             status_code = Helpers.determine_method(active_ransomware, f, method, log_file)
             if not status_code:
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
             # Write method status complete
             LogUtils.write_log(log_file, str(method) + " completed.")
-
+            print(method + " completed")
         # If there are any files not decrypted:
         if len(error_files) > 0:
             print(colored("Error decrypting file(s):", 'red'))

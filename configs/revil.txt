@@ -1,7 +1,7 @@
 [revil.txt]
 Extension: .567fg30k
-Methodology: CRC_1, CRC_2, CRC_3, Master_sk, Decode_key_1, Curve25591_1, SHA3, AES, Cut, Curve25591_2, SHA3, Salsa20
-
+Methodology: CRC_1, CRC_2, CRC_3, Master_sk, Decode_key_1, Curve25591_1, SHA3, AES, Cut
+joe: Curve25591_2, SHA3, Salsa20
 CRC_1_hash_offset: -16
 CRC_1_hash_length: 4
 CRC_1_data_offset: -56
@@ -25,7 +25,17 @@ Curve25591_1_public_offset: -196
 Curve25591_1_public_length: 32
 Curve25591_1_secret: Decode_key_1
 
-
 AES_size: 256
 AES_mode: MODE_CTR
+AES_iv_offset: -164
+AES_iv_length: 16
+AES_data_offset: -232
+AES_data_length: 36
+
+Cut_offset_start: 4
+Cut_offset_end: 36
+
+
+
+
 meta_data_offset: 232
