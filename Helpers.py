@@ -83,7 +83,7 @@ def determine_method(active_ransomware, f, method, log_file):
                 return True
         except Exception as e:
             print("exception")
-            LogUtils.write_log(log_file, "ERROR: Decoding key: " + str(e))
+            LogUtils.write_log(log_file, "ERROR: Generating shared key: " + str(e))
             return False
         return False
     elif method == "SHA3":
@@ -116,12 +116,23 @@ def determine_method(active_ransomware, f, method, log_file):
             CONSTS.cut_offset_end = int(config.get(active_ransomware, "Cut_offset_end"))
             CONSTS.aes_decrypted_data = cut_data(CONSTS.cut_offset_start, CONSTS.cut_offset_end,
                                                  CONSTS.aes_decrypted_data)
-            print(CONSTS.aes_decrypted_data.encode('hex'))
         except Exception as e:
             LogUtils.write_log(log_file, "ERROR: Cutting: " + str(e))
             return False
         return True
-
+    elif method == "Curve25591_2":
+        try:
+            curve_public_offset = int(config.get(active_ransomware, "Curve25591_2_public_offset"))
+            curve_public_length = int(config.get(active_ransomware, "Curve25591_2_public_length"))
+            CONSTS.curve_25591_public = get_data(f, curve_public_offset, curve_public_length)
+            curve_secret = getattr(CONSTS, config.get(active_ransomware, "Curve25591_2_secret"))
+            if CryptoUtils.gen_curve_key(CONSTS.curve_25591_public, curve_secret):
+                return True
+        except Exception as e:
+            print("exception")
+            LogUtils.write_log(log_file, "ERROR: Generating shared key: " + str(e))
+            return False
+        return False
     elif method == "Salsa20":
         return True
     else:
