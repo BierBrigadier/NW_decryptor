@@ -5,14 +5,18 @@ import base64
 from binascii import hexlify
 import CONSTS
 from termcolor import colored
-
+from Crypto.Cipher import Salsa20
 import CryptoUtils
 import LogUtils
 
 
 def determine_method(active_ransomware, f, method, log_file):
+    # Read configuration file:
     config = ConfigParser.ConfigParser()
     config.read("configs/" + active_ransomware)
+    extension = config.get(active_ransomware, "Extension")
+
+    # Check decryption blocks:
     if method == "CRC_1":
         try:
             crc_1_hash_offset = config.get(active_ransomware, "CRC_1_hash_offset")
@@ -84,15 +88,14 @@ def determine_method(active_ransomware, f, method, log_file):
         except Exception as e:
             print("exception")
             LogUtils.write_log(log_file, "ERROR: Generating shared key: " + str(e))
-            return False
         return False
     elif method == "SHA3":
         try:
             CONSTS.sha_key_1 = CryptoUtils.hash_key(CONSTS.curve_25591_shared)
+            return True
         except Exception as e:
             LogUtils.write_log(log_file, "ERROR: Hashing key: " + str(e))
-            return False
-        return True
+        return False
     elif method == "AES":
         try:
             CONSTS.aes_size = int(config.get(active_ransomware, "AES_size"))
@@ -107,19 +110,20 @@ def determine_method(active_ransomware, f, method, log_file):
             CONSTS.aes_data = get_data(f, aes_data_offset, aes_data_length)
             CONSTS.aes_decrypted_data = CryptoUtils.aes_decrypt(CONSTS.sha_key_1, CONSTS.aes_iv, CONSTS.aes_mode,
                                                                 CONSTS.aes_size, CONSTS.aes_data)
+            return True
         except Exception as e:
             LogUtils.write_log(log_file, "ERROR: AES decryption: " + str(e))
-        return True
+        return False
     elif method == "Cut":
         try:
             CONSTS.cut_offset_start = int(config.get(active_ransomware, "Cut_offset_start"))
             CONSTS.cut_offset_end = int(config.get(active_ransomware, "Cut_offset_end"))
             CONSTS.aes_decrypted_data = cut_data(CONSTS.cut_offset_start, CONSTS.cut_offset_end,
                                                  CONSTS.aes_decrypted_data)
+            return True
         except Exception as e:
             LogUtils.write_log(log_file, "ERROR: Cutting: " + str(e))
-            return False
-        return True
+        return False
     elif method == "Curve25591_2":
         try:
             curve_public_offset = int(config.get(active_ransomware, "Curve25591_2_public_offset"))
@@ -129,15 +133,40 @@ def determine_method(active_ransomware, f, method, log_file):
             if CryptoUtils.gen_curve_key(CONSTS.curve_25591_public, curve_secret):
                 return True
         except Exception as e:
-            print("exception")
             LogUtils.write_log(log_file, "ERROR: Generating shared key: " + str(e))
-            return False
         return False
     elif method == "Salsa20":
-        return True
+        try:
+            # Read configuration data:
+            salsa_nonce_offset = int(config.get(active_ransomware, "Salsa20_nonce_offset"))
+            salsa_nonce_length = int(config.get(active_ransomware, "Salsa20_nonce_length"))
+            salsa_encd_null_bytes_offset = int(config.get(active_ransomware, "Salsa20_encd_null_bytes_offset"))
+            salsa_encd_null_bytes_length = int(config.get(active_ransomware, "Salsa20_encd_null_bytes_length"))
+            salsa_decryption_mode_offset = int(config.get(active_ransomware, "Salsa20_decryption_mode_offset"))
+            salsa_decryption_mode_length = int(config.get(active_ransomware, "Salsa20_decryption_mode_length"))
+            salsa_skip_size_offset = int(config.get(active_ransomware, "Salsa20_skip_size_offset"))
+            salsa_skip_size_length = int(config.get(active_ransomware, "Salsa20_skip_size_length"))
+            salsa_cipher_update = int(config.get(active_ransomware, "Salsa20_cipher_update"))
+            meta_data_offset = int(config.get(active_ransomware, "Meta_data_offset"))
+
+            # Read data
+            salsa_nonce = get_data(f, salsa_nonce_offset, salsa_nonce_length)
+            salsa_encd_null_bytes = get_data(f, salsa_encd_null_bytes_offset, salsa_encd_null_bytes_length)
+            salsa_decryption_mode = get_data(f, salsa_decryption_mode_offset, salsa_decryption_mode_length)
+            salsa_skip_size = get_data(f, salsa_skip_size_offset, salsa_skip_size_length)
+            encrypted_data = get_file_data(f, meta_data_offset)
+
+            # Decrypt data:
+            plaintext = CryptoUtils.salsa_decryption(CONSTS.sha_key_1, salsa_nonce, salsa_encd_null_bytes, encrypted_data, salsa_decryption_mode, salsa_skip_size, salsa_cipher_update)
+            if plaintext:
+                write_data(f[:-len(extension)], plaintext)
+                return True
+        except Exception as e:
+            LogUtils.write_log(log_file, "ERROR: Generating Salsa20 decryption: " + str(e))
+        return False
     else:
-        print("no method fouund")
-        return True
+        print("No method found!")
+        return False
 
 
 def get_data(path, offset, length):
@@ -147,6 +176,17 @@ def get_data(path, offset, length):
         data = f.read(length)
         f.close()
         return data
+    except IOError:
+        print(IOError)
+    return False
+
+
+def get_file_data(path, offset):
+    try:
+        f = open(path, 'rb')
+        content = f.read()
+        content = content[:(len(content)+offset)]
+        return content
     except IOError:
         print(IOError)
     return False
@@ -173,3 +213,14 @@ def swappositions(hexlist):
 
 def cut_data(offset_start, offset_end, data):
     return data[offset_start:offset_end]
+
+
+def write_data(path, data):
+    try:
+        f = open(path, 'wb')
+        f.write(data)
+        f.close()
+        return True
+    except IOError:
+        print(IOError)
+    return False
