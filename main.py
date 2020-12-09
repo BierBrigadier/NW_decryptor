@@ -2,6 +2,7 @@ import ConfigParser
 import os.path
 import Helpers
 import LogUtils
+import CONSTS
 from termcolor import colored
 
 
@@ -15,7 +16,7 @@ if __name__ == '__main__':
         active_ransomware = config.get("Parameters", "active_ransomware")
         decryption_start = config.get("Parameters", "decryption_start")
         delete_ransom_files = config.get("Parameters", "delete_ransom_files")
-        key_path = config.get("Parameters", "key_path")
+        CONSTS.key_path = config.get("Parameters", "key_path")
         log_file = config.get("Parameters", "log_file")
 
         # Read ransomware specific details:
@@ -38,11 +39,10 @@ if __name__ == '__main__':
             for filename in [f for f in filenames if f.endswith(extension)]:
                 if not dirpath.__contains__("$Recycle.Bin"):
                     f = os.path.join(dirpath, filename)
-
+                    f = r"C:\filesss\merged lockbit files\nwcrypter\hmd-ad-licentie.csv.lockbit"
                     # Execute tasks:
                     for method in methodology:
                         LogUtils.write_log(log_file, method + " start.")
-
                         # If method fails, log it and skip file
                         success = Helpers.determine_method(active_ransomware, f, method, log_file)
                         if success:
@@ -74,4 +74,5 @@ if __name__ == '__main__':
     # Catch config exceptions:
     except ConfigParser.NoSectionError as e:
         print(colored("Could not read configuration files!", 'red'))
+        print(e)
         exit(0)

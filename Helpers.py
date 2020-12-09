@@ -2,10 +2,14 @@ import ConfigParser
 import binascii
 import zlib
 import base64
-from binascii import hexlify
+import os
 import CONSTS
 from termcolor import colored
-from Crypto.Cipher import Salsa20
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+from binascii import hexlify
+from Crypto.PublicKey import RSA
 import CryptoUtils
 import LogUtils
 
@@ -157,13 +161,95 @@ def determine_method(active_ransomware, f, method, log_file):
             encrypted_data = get_file_data(f, meta_data_offset)
 
             # Decrypt data:
-            plaintext = CryptoUtils.salsa_decryption(CONSTS.sha_key_1, salsa_nonce, salsa_encd_null_bytes, encrypted_data, salsa_decryption_mode, salsa_skip_size, salsa_cipher_update)
+            plaintext = CryptoUtils.salsa_decryption(CONSTS.sha_key_1, salsa_nonce, salsa_encd_null_bytes,
+                                                     encrypted_data, salsa_decryption_mode, salsa_skip_size,
+                                                     salsa_cipher_update)
             if plaintext:
                 write_data(f[:-len(extension)], plaintext)
                 return True
         except Exception as e:
             LogUtils.write_log(log_file, "ERROR: Generating Salsa20 decryption: " + str(e))
         return False
+    elif method == "Assemble_RSA":
+        try:
+            CONSTS.n = int(config.get(active_ransomware, "n"))
+            CONSTS.e = int(config.get(active_ransomware, "e"))
+            CONSTS.d = int(config.get(active_ransomware, "d"))
+            CONSTS.p = int(config.get(active_ransomware, "p"))
+            CONSTS.q = int(config.get(active_ransomware, "q"))
+            CONSTS.e1 = int(config.get(active_ransomware, "e1"))
+            CONSTS.e2 = int(config.get(active_ransomware, "e2"))
+            CONSTS.coef = int(config.get(active_ransomware, "coef"))
+            private_key = create_private_key(CONSTS.key_path, "private_key.txt", CONSTS.n, CONSTS.e, CONSTS.d, CONSTS.p,
+                                             CONSTS.q,
+                                             CONSTS.coef)
+            if private_key:
+                CONSTS.rsa_main_key = private_key
+                return True
+        except Exception as e:
+            LogUtils.write_log(log_file, "ERROR: Assembling RSA key: " + str(e))
+        return False
+    elif method == "Decrypt_RSA_big":
+        try:
+            # Read config values:
+            offset = int(config.get(active_ransomware, "Encd_session_key_offset"))
+            length = int(config.get(active_ransomware, "Encd_session_key_length"))
+            CONSTS.rsa_size = int(config.get(active_ransomware, "RSA_size")) / 8
+
+            CONSTS.rsa_data = get_data(f, offset, length)
+            if len(CONSTS.rsa_data) == 1280:
+                CONSTS.rsa_decrypted_data = CryptoUtils.decrypt_session_keys_ciphertext(CONSTS.rsa_size, CONSTS.rsa_main_key, CONSTS.rsa_data)
+                if CONSTS.rsa_decrypted_data:
+                    return True
+        except Exception as e:
+            LogUtils.write_log(log_file, "ERROR: Decrypting RSA: " + str(e))
+        return False
+    elif method == "Assemble_session_RSA":
+        try:
+            if CONSTS.rsa_decrypted_data:
+                # Read prime offsets:
+                n_length = int(config.get(active_ransomware, "n_length"))
+                e_length = int(config.get(active_ransomware, "e_length"))
+                d_length = int(config.get(active_ransomware, "d_length"))
+                p_length = int(config.get(active_ransomware, "p_length"))
+                q_length = int(config.get(active_ransomware, "q_length"))
+                dp_length = int(config.get(active_ransomware, "dp_length"))
+                dq_length = int(config.get(active_ransomware, "dq_length"))
+                qp_length = int(config.get(active_ransomware, "qp_length"))
+
+                # Get pieces of substring:
+                n = get_substring(CONSTS.rsa_decrypted_data, 0, n_length)
+                e = get_substring(CONSTS.rsa_decrypted_data, n_length, e_length)
+                d = get_substring(CONSTS.rsa_decrypted_data, e_length, d_length)
+                p = get_substring(CONSTS.rsa_decrypted_data, d_length, p_length)
+                q = get_substring(CONSTS.rsa_decrypted_data, p_length, q_length)
+                dp = get_substring(CONSTS.rsa_decrypted_data, q_length, dp_length)
+                dq = get_substring(CONSTS.rsa_decrypted_data, dp_length, dq_length)
+                coef = get_substring(CONSTS.rsa_decrypted_data, dq_length, qp_length)
+
+                # Assemble private key:
+                CONSTS.rsa_session_key = create_private_key(CONSTS.key_path, "session_key.txt", n, e, d, p, q, coef)
+                if CONSTS.rsa_session_key:
+                    return True
+        except Exception as e:
+            LogUtils.write_log(log_file, "ERROR: Assembling session RSA key: " + str(e))
+        return False
+    elif method == "Decrypt_RSA_small":
+        try:
+            # Read config values:
+            CONSTS.aes_size = int(config.get(active_ransomware, "AES_size"))
+            offset = int(config.get(active_ransomware, "RSA_encd_data_offset"))
+            length = int(config.get(active_ransomware, "RSA_encd_data_length"))
+            CONSTS.rsa_size = int(config.get(active_ransomware, "RSA_size")) / 8
+            CONSTS.rsa_data = get_data(f, offset, length)
+
+            if len(CONSTS.rsa_data) == 256:
+                if CryptoUtils.rsa_decrypt(CONSTS.rsa_size, CONSTS.aes_size, CONSTS.rsa_session_key, CONSTS.rsa_data):
+                    return True
+        except Exception as e:
+            LogUtils.write_log(log_file, "ERROR: Decrypting RSA small: " + str(e))
+        return False
+
     else:
         print("No method found!")
         return False
@@ -185,7 +271,7 @@ def get_file_data(path, offset):
     try:
         f = open(path, 'rb')
         content = f.read()
-        content = content[:(len(content)+offset)]
+        content = content[:(len(content) + offset)]
         return content
     except IOError:
         print(IOError)
@@ -224,3 +310,25 @@ def write_data(path, data):
     except IOError:
         print(IOError)
     return False
+
+
+def create_private_key(path, name, n, e, d, p, q, coef):
+    params = (n, long(e), d, p, q, coef)
+    key = RSA.construct(params, consistency_check=False)
+    private_key = key.exportKey(format='PEM', passphrase=None, pkcs=1)
+    try:
+        if not os.path.exists(path):
+            os.makedirs(path)
+        f = open(path + name, 'wb')
+        f.write(private_key)
+        f.close()
+        CONSTS.rsa_main_key_path = path + name
+    except IOError as e:
+        print("IO Exception writing main RSA private key: " + str(e))
+        return False
+    return serialization.load_pem_private_key(private_key, password=None, backend=default_backend())
+
+
+def get_substring(hex_string, start, end):
+    x = int(hex_string[start:end], 16)
+    return x

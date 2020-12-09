@@ -8,6 +8,9 @@ import Helpers
 import donna25519
 import nacl.utils
 from Crypto.Cipher import AES, Salsa20
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding
 
 
 def gen_curve_key(pk, sk):
@@ -66,3 +69,46 @@ def salsa_decryption(key, nonce, encd_null_bytes, encd_data, decryption_mode, sk
                 pointer += skip_size * 1048576
                 decrypt = True
     return plaintext
+
+
+def decrypt_session_keys_ciphertext(default_length, private_key, encrypted):
+    try:
+        length = len(encrypted)
+        if length < default_length:
+            print("Length is less than default length!")
+        else:
+            offset = 0
+            res = []
+            i = 0
+            while i < 5:
+                if length - offset > default_length:
+                    result = private_key.decrypt(encrypted[offset: offset + default_length], padding.PKCS1v15())
+                    res.append(result)
+                else:
+                    result = private_key.decrypt(encrypted[offset:], padding.PKCS1v15())
+                    res.append(result)
+                offset += default_length
+                i += 1
+            decrypted_hex = hexlify(b''.join(res))
+            return decrypted_hex
+    except Exception as e:
+        print(e)
+    return False
+
+
+def rsa_decrypt(default_length, aes_length, private_key, encrypted):
+    try:
+        length = len(encrypted)
+        if length < default_length:
+            print("Length is less than default length!")
+            return 0, 0
+        else:
+            aes_hex_complete = hexlify(private_key.decrypt(encrypted, padding.PKCS1v15()))
+            key = aes_hex_complete[:aes_length / 4].decode('hex')
+            iv = aes_hex_complete[aes_length / 4:aes_length / 2].decode('hex')
+            CONSTS.aes_key = key
+            CONSTS.aes_iv = iv
+            return True
+    except Exception as e:
+        print(e)
+    return False
