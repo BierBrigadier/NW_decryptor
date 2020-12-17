@@ -1,6 +1,6 @@
 [Parameters]
-active_ransomware: lockbit.txt
-decryption_start: C:\filesss\merged lockbit files\nwcrypter
+active_ransomware: revil.txt
+decryption_start: C:\Users\nw
 delete_ransom_files: False
 key_path: C:\Users\nw\Desktop\LockbitDecryptor\Keys\Keys\
-log_file: C:\Users\nw\Desktop\LockbitDecryptor\logs.txt
+log_file: C:\Users\nw\Desktop\logs.txt

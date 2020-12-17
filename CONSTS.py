@@ -13,7 +13,7 @@ aes_key = None
 aes_iv = None
 aes_data = None
 aes_decrypted_data = None
-
+aes_chunk_size = None
 
 cut_offset_start = None
 cut_offset_end = None
@@ -37,4 +37,4 @@ rsa_decrypted_data = None
 
 rsa_session_key = None
 
-
+meta_offset = None

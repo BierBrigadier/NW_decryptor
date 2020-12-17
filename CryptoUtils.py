@@ -6,6 +6,7 @@ from nacl.public import PrivateKey
 from nacl.public import Box
 import Helpers
 import donna25519
+import os
 import nacl.utils
 from Crypto.Cipher import AES, Salsa20
 from cryptography.hazmat.backends import default_backend
@@ -109,6 +110,65 @@ def rsa_decrypt(default_length, aes_length, private_key, encrypted):
             CONSTS.aes_key = key
             CONSTS.aes_iv = iv
             return True
+    except Exception as e:
+        print(e)
+    return False
+
+
+def aes_decrypt_cbc(aes_key, iv, meta_offset, chunk_size, in_file, out_file):
+    try:
+        aes = AES.new(aes_key, AES.MODE_CBC, iv)
+        file_size = os.path.getsize(in_file) - meta_offset
+        # if True:
+        if os.path.getsize(in_file) <= 262144:
+            with open(in_file, 'rb') as fin:
+                # data = fin.read(file_size - 1552)  # Read everything but last 610h bytes
+                block_size = 16
+                with open(out_file, 'wb') as fout:
+                    while True:
+                        data = fin.read(block_size)
+                        n = len(data)
+                        if n == 0:  # If there is no block left, break
+                            break
+                        decd = aes.decrypt(data)
+                        n = len(decd)
+                        if file_size > n:
+                            fout.write(decd)
+                        file_size -= n
+            return True
+        else:
+            with open(in_file, 'rb') as fin:
+                with open(out_file, 'wb') as fout:
+                    all_bytes = fin.read()
+                    data = all_bytes[:-meta_offset]
+                    pointer = 2 * chunk_size
+                    chunks_left = len(data)/chunk_size
+
+                    # Decrypt first ciphertext
+                    data_to_decrypt = data[0:pointer]
+                    decd = aes.decrypt(data_to_decrypt)
+                    chunks_left = chunks_left - 2
+                    fout.write(decd)
+                    while True:
+                        # Append data
+                        other_data = data[pointer: pointer + (13 * chunk_size)]
+                        fout.write(other_data)
+                        pointer = pointer + (13 * chunk_size)
+                        chunks_left = chunks_left - 13
+                        if chunks_left <= 0:
+                            break
+
+                        # Decrypt data
+                        if chunks_left == 4:
+                            other_data = data[pointer: pointer + (4 * chunk_size)]
+                            fout.write(other_data)
+                            break
+                        data_to_decrypt = data[pointer: pointer + 2 * chunk_size]
+                        decd = aes.decrypt(data_to_decrypt)
+                        fout.write(decd)
+                        pointer = pointer + (2 * chunk_size)
+                        chunks_left = chunks_left - 2
+                    return True
     except Exception as e:
         print(e)
     return False

@@ -39,7 +39,7 @@ if __name__ == '__main__':
             for filename in [f for f in filenames if f.endswith(extension)]:
                 if not dirpath.__contains__("$Recycle.Bin"):
                     f = os.path.join(dirpath, filename)
-                    f = r"C:\filesss\merged lockbit files\nwcrypter\hmd-ad-licentie.csv.lockbit"
+                    # f = r"C:\filesss\merged lockbit files\nwcrypter\hmd-ad-licentie.csv.lockbit"
                     # Execute tasks:
                     for method in methodology:
                         LogUtils.write_log(log_file, method + " start.")

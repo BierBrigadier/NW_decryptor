@@ -198,7 +198,9 @@ def determine_method(active_ransomware, f, method, log_file):
 
             CONSTS.rsa_data = get_data(f, offset, length)
             if len(CONSTS.rsa_data) == 1280:
-                CONSTS.rsa_decrypted_data = CryptoUtils.decrypt_session_keys_ciphertext(CONSTS.rsa_size, CONSTS.rsa_main_key, CONSTS.rsa_data)
+                CONSTS.rsa_decrypted_data = CryptoUtils.decrypt_session_keys_ciphertext(CONSTS.rsa_size,
+                                                                                        CONSTS.rsa_main_key,
+                                                                                        CONSTS.rsa_data)
                 if CONSTS.rsa_decrypted_data:
                     return True
         except Exception as e:
@@ -249,7 +251,13 @@ def determine_method(active_ransomware, f, method, log_file):
         except Exception as e:
             LogUtils.write_log(log_file, "ERROR: Decrypting RSA small: " + str(e))
         return False
-
+    elif method == "AES_CBC":
+        CONSTS.aes_chunk_size = int(config.get(active_ransomware, "AES_chunk_size"))
+        CONSTS.meta_offset = int(config.get(active_ransomware, "Meta_data_offset"))
+        plaintext = CryptoUtils.aes_decrypt_cbc(CONSTS.aes_key, CONSTS.aes_iv, CONSTS.meta_offset,
+                                                CONSTS.aes_chunk_size, f, f[:-len(extension)])
+        if plaintext:
+            return True
     else:
         print("No method found!")
         return False
