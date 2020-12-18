@@ -15,4 +15,5 @@ https://nuitka.net/
 	python -m nuitka --version
 5. Create executable (takes a few minutes):
 	python -m nuitka --mingw64 --follow-imports main.py
+	python -m nuitka --standalone --recurse-all --mingw64 main.py
 6. Copy the configs folder in the same folder as the created executable.
