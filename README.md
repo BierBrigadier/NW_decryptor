@@ -17,3 +17,10 @@ https://nuitka.net/
 	python -m nuitka --mingw64 --follow-imports main.py
 	python -m nuitka --standalone --recurse-all --mingw64 main.py
 6. Copy the configs folder in the same folder as the created executable.
+
+
+Donna troubleshoot:
+Copy:
+https://github.com/mattn/gntp-send/blob/master/include/msinttypes/stdint.h
+to:
+C:\Users\nw\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include
