@@ -1,5 +1,17 @@
 # NW_decryptor
 
+Running decryptor:
+1. Navigate in cmd to the folder in which main.py is located.
+2. Activate the virtual environment:
+	venv\Scripts\activate
+
+Donna troubleshoot:
+Copy:
+https://github.com/mattn/gntp-send/blob/master/include/msinttypes/stdint.h
+to:
+C:\Users\nw\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include
+
+
 
 
 Creating a standalone executable
