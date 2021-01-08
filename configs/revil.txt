@@ -6,7 +6,6 @@ Methodology: CRC_1, CRC_2, CRC_3, Master_sk, Decode_key_1, Curve25591_1, SHA3, A
 
 Master_sk: COa1JNLFTtIkqmUBdBvMQhwq/sNv6UuZ0Z4GJl98bwY=
 
-
 CRC_1_hash_offset: -16
 CRC_1_hash_length: 4
 CRC_1_data_offset: -56
