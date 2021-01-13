@@ -4,13 +4,24 @@ Running decryptor:
 1. Navigate in cmd to the folder in which main.py is located.
 2. Activate the virtual environment:
 	venv\Scripts\activate
+3. Run main.py
 
-Donna troubleshoot:
+
+Installing decryptor:
+1. Download Python 2.7.16 (2.7 does not work with pip!)
+2. Download Visual C++ compiler for Python 2.7:
+https://www.microsoft.com/en-us/download/details.aspx?id=44266
+3. Donna setup:
 Copy:
 https://github.com/mattn/gntp-send/blob/master/include/msinttypes/stdint.h
 to:
 C:\Users\nw\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include
 
+5. Activate venv:
+venv\Scripts\activate
+
+4. Install requirements.txt
+pip install -r requirements.txt
 
 
 
