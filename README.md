@@ -36,3 +36,5 @@ Copy:
 https://github.com/mattn/gntp-send/blob/master/include/msinttypes/stdint.h
 to:
 C:\Users\nw\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include
+
+OB: fw3wr42KGihNMzIqQ1befcTRrDEYM2dKhAXVaLITjyE=
