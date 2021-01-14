@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 
 
-Creating a standalone executable
+Creating a standalone executable (Not completely working):
 In order to create a standalone executable, you will need to install Nuitka:
 https://nuitka.net/
 
@@ -42,11 +42,11 @@ https://nuitka.net/
 6. Copy the configs folder in the same folder as the created executable.
 
 
-Donna troubleshoot:
-Copy:
-https://github.com/mattn/gntp-send/blob/master/include/msinttypes/stdint.h
-to:
-C:\Users\nw\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include
-
 Eerste: COa1JNLFTtIkqmUBdBvMQhwq/sNv6UuZ0Z4GJl98bwY=
 OB: fw3wr42KGihNMzIqQ1befcTRrDEYM2dKhAXVaLITjyE=
+
+
+Future work:
+- Handle more errors.
+- Extract ransomware configuration, such as actor ID from REvil. Similar to: https://blog.kartone.ninja/2020/10/29/project-sodinokibi/
+
