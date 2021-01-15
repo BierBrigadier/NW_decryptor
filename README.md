@@ -1,13 +1,8 @@
 # NW_decryptor
 
-Running decryptor:
-1. Navigate in cmd to the folder in which main.py is located.
-2. Activate the virtual environment:
-venv\Scripts\activate
-3. Run main.py
 
-
-Installing decryptor:
+Set up Decryptor:
+------
 1. Download Python 2.7.16 (2.7 does not work with pip!)
 2. Download Visual C++ compiler for Python 2.7:
 https://www.microsoft.com/en-us/download/details.aspx?id=44266
@@ -17,16 +12,24 @@ https://github.com/mattn/gntp-send/blob/master/include/msinttypes/stdint.h
 to:
 C:\Users\nw\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include
 
-5. Activate venv:
+4. Activate venv:
 venv\Scripts\activate
 
-4. Install requirements.txt
+5. Install requirements.txt
 pip install -r requirements.txt
 
 
+Run Decryptor from source:
+------
+1. Navigate in cmd to the folder in which main.py is located.
+2. Activate the virtual environment:
+venv\Scripts\activate
+3. Run main.py
 
-Creating a standalone executable ):
-In order to create a standalone executable, you will need to install Pyinstaller version 3.6.
+
+Standalone executable:
+------
+In order to create a standalone executable, you will need to install Pyinstaller **version 3.6**.
 
 1. Navigate in cmd to the folder in which main.py is located.
 2. Activate the virtual environment:
@@ -40,12 +43,13 @@ pyinstaller main.py --onefile
 
 
 
-Eerste: COa1JNLFTtIkqmUBdBvMQhwq/sNv6UuZ0Z4GJl98bwY=
-OB: fw3wr42KGihNMzIqQ1befcTRrDEYM2dKhAXVaLITjyE=
-
-
 Future work:
+------
 - Handle more errors.
+- Option to bruteforce Lockbit integers so that the user does not have to supply an integer to the correct variable.
 - Add more ransomware variants.
 - Extract ransomware configuration, such as an actor ID from REvil. Similar to: https://blog.kartone.ninja/2020/10/29/project-sodinokibi/
+
+Eerste: COa1JNLFTtIkqmUBdBvMQhwq/sNv6UuZ0Z4GJl98bwY=
+OB: fw3wr42KGihNMzIqQ1befcTRrDEYM2dKhAXVaLITjyE=
 
