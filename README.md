@@ -6,7 +6,7 @@ Set up Decryptor:
 1. Download Python 2.7.16 (2.7 does not work with pip!)
 2. Download Visual C++ compiler for Python 2.7:
 https://www.microsoft.com/en-us/download/details.aspx?id=44266
-3. Donna setup:
+3. Pre-fix Donna library:
 Copy:
 https://github.com/mattn/gntp-send/blob/master/include/msinttypes/stdint.h
 to:
