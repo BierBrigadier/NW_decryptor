@@ -66,7 +66,7 @@ REVIL.TXT:
 Extension must be changed to the incident's extension.
 CRC1-3 are optional but advised (for integrity) in Revil.
 Offsets should not be touched unless ransomware structure changes!
-
+Master_sk should be changed to incident's private key.
 [revil.txt]
 
 Extension: .7094h8zb7o
