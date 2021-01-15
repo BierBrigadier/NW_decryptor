@@ -3,7 +3,7 @@
 Running decryptor:
 1. Navigate in cmd to the folder in which main.py is located.
 2. Activate the virtual environment:
-	venv\Scripts\activate
+venv\Scripts\activate
 3. Run main.py
 
 
@@ -48,5 +48,6 @@ OB: fw3wr42KGihNMzIqQ1befcTRrDEYM2dKhAXVaLITjyE=
 
 Future work:
 - Handle more errors.
-- Extract ransomware configuration, such as actor ID from REvil. Similar to: https://blog.kartone.ninja/2020/10/29/project-sodinokibi/
+- Add more ransomware variants.
+- Extract ransomware configuration, such as an actor ID from REvil. Similar to: https://blog.kartone.ninja/2020/10/29/project-sodinokibi/
 
