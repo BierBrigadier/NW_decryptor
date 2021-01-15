@@ -25,9 +25,8 @@ pip install -r requirements.txt
 
 
 
-Creating a standalone executable (Not completely working):
-In order to create a standalone executable, you will need to install Nuitka:
-https://nuitka.net/
+Creating a standalone executable ):
+In order to create a standalone executable, you will need to install Pyinstaller version 3.6.
 
 1. Navigate in cmd to the folder in which main.py is located.
 2. Activate the virtual environment:
@@ -36,7 +35,7 @@ https://nuitka.net/
 pip install pyinstaller==3.6
 pip install pypiwin32
 4. Build executable:
-pyinstaller main.py
+pyinstaller main.py --onefile
 
 
 

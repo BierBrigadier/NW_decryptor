@@ -1,0 +1,54 @@
+[revil.txt]
+
+Extension: .7094h8zb7o
+
+Methodology: CRC_1, CRC_2, CRC_3, Master_sk, Decode_key_1, Curve25591_1, SHA3, AES, Cut, Curve25591_2, SHA3, Salsa20
+
+Master_sk: fw3wr42KGihNMzIqQ1befcTRrDEYM2dKhAXVaLITjyE=
+
+CRC_1_hash_offset: -16
+CRC_1_hash_length: 4
+CRC_1_data_offset: -56
+CRC_1_data_length: 32
+
+CRC_2_hash_offset: -148
+CRC_2_hash_length: 4
+CRC_2_data_offset: -232
+CRC_2_data_length: 36
+
+CRC_3_hash_offset: -60
+CRC_3_hash_length: 4
+CRC_3_data_offset: -144
+CRC_3_data_length: 36
+
+Decode_key_1: Master_sk
+
+Curve25591_1_public_offset: -196
+Curve25591_1_public_length: 32
+Curve25591_1_secret: Decode_key_1
+
+AES_size: 256
+AES_mode: MODE_CTR
+AES_iv_offset: -164
+AES_iv_length: 16
+AES_data_offset: -232
+AES_data_length: 36
+
+Cut_offset_start: 4
+Cut_offset_end: 36
+
+Curve25591_2_public_offset: -56
+Curve25591_2_public_length: 32
+Curve25591_2_secret: aes_decrypted_data
+
+Salsa20_nonce_offset: -24
+Salsa20_nonce_length: 8
+Salsa20_encd_null_bytes_offset: -4
+Salsa20_encd_null_bytes_length: 4
+Salsa20_decryption_mode_offset: -12
+Salsa20_decryption_mode_length: 4
+Salsa20_skip_size_offset: -8
+Salsa20_skip_size_length: 4
+Salsa20_cipher_update: 15
+
+Meta_data_offset: -232
