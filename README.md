@@ -10,20 +10,20 @@ https://www.microsoft.com/en-us/download/details.aspx?id=44266
 Copy:
 https://github.com/mattn/gntp-send/blob/master/include/msinttypes/stdint.h
 to:
-C:\Users\nw\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include
+`C:\Users\nw\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include`
 
 4. Activate venv:
-venv\Scripts\activate
+`venv\Scripts\activate`
 
 5. Install requirements.txt
-pip install -r requirements.txt
+`pip install -r requirements.txt`
 
 
 Run Decryptor from source:
 ------
 1. Navigate in cmd to the folder in which main.py is located.
 2. Activate the virtual environment:
-venv\Scripts\activate
+`venv\Scripts\activate`
 3. Run main.py
 
 
@@ -33,12 +33,12 @@ In order to create a standalone executable, you will need to install Pyinstaller
 
 1. Navigate in cmd to the folder in which main.py is located.
 2. Activate the virtual environment:
-	venv\Scripts\activate
+	`venv\Scripts\activate`
 3. Install PyInstaller version 3.6 (last version for python2.7 support!):
-	pip install pyinstaller==3.6
-	pip install pypiwin32
+	`pip install pyinstaller==3.6`
+	`pip install pypiwin32`
 4. Build executable:
-	pyinstaller main.py --onefile
+	`pyinstaller main.py --onefile`
 
 
 
