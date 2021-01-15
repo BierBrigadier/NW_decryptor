@@ -3,11 +3,12 @@ import os.path
 import Helpers
 import LogUtils
 import CONSTS
-from termcolor import colored
+from termcolor import *
+import colorama
 
 
 if __name__ == '__main__':
-
+    colorama.init()
     # Read configuration file:
     config = ConfigParser.ConfigParser()
     try:
@@ -33,7 +34,7 @@ if __name__ == '__main__':
         error_files = []
         successful = False
 
-        print(colored("Decryptor start", 'green'))
+        cprint("Decryptor start", 'green')
         # Loop over each encrypted file and decrypt according to methodology:
         for dirpath, dirnames, filenames in os.walk(decryption_start):
             for filename in [f for f in filenames if f.endswith(extension)]:
@@ -58,21 +59,21 @@ if __name__ == '__main__':
 
                     # Write event logs if successful:
                     if successful:
-                        print(colored("Decrypted " + f, 'white'))
+                        cprint("Decrypted " + f, 'white')
                         LogUtils.write_log(log_file, "Decryption of " + str(f) + " successful")
                         successful = False
 
         # If there are any files not decrypted write event logs:
         if len(error_files) > 0:
             LogUtils.write_log(log_file, "The following files are not decrypted: " + str(error_files))
-            print(colored("Error decrypting file(s):", 'red'))
+            cprint("Error decrypting file(s):", 'red')
             print(error_files)
         else:
             LogUtils.write_log(log_file, "Decryption completed!")
-            print(colored("\nDecryption completed!", 'green'))
+            cprint("\nDecryption completed!", 'green')
 
     # Catch config exceptions:
     except ConfigParser.NoSectionError as e:
-        print(colored("Could not read configuration files!", 'red'))
+        cprint("Could not read configuration files!", 'red')
         print(e)
         exit(0)
