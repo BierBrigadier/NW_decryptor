@@ -56,11 +56,12 @@ In order to create a standalone executable, you will need to install Pyinstaller
 
 Future work:
 ------
-- Handle more errors.
+- Search for errors (and handle them).
+- Efficiency. Currently we have a triple for-loop (for each folder, for each file, for each method). Come up with a solution by not recomputing decryption keys for each file. The criminal's decryptor is more time-efficient, but goes into an error state (skips a lot) because of the lack of recomputing.
 - Option to bruteforce Lockbit integers so that the user does not have to supply an integer to the correct variable.
 - Add more ransomware variants.
 - Extract ransomware configuration, such as an actor ID from REvil. Similar to: https://blog.kartone.ninja/2020/10/29/project-sodinokibi/
-- Create test cases to prevent breaking of functionality.
+- Create test cases to prevent breaking functionality during development.
 
 Eerste: COa1JNLFTtIkqmUBdBvMQhwq/sNv6UuZ0Z4GJl98bwY=
 OB: fw3wr42KGihNMzIqQ1befcTRrDEYM2dKhAXVaLITjyE=
