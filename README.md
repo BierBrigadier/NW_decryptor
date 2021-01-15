@@ -1,7 +1,10 @@
 # NW_decryptor
 
+Usage
+------
+Read manual.txt
 
-Set up Decryptor:
+Set up Development Decryptor:
 ------
 1. Download Python 2.7.16 (2.7 does not work with pip!)
 2. Download Visual C++ compiler for Python 2.7:
