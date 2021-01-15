@@ -35,9 +35,11 @@ In order to create a standalone executable, you will need to install Pyinstaller
 2. Activate the virtual environment:
 	`venv\Scripts\activate`
 3. Install PyInstaller version 3.6 (last version for python2.7 support!):
+
 	`pip install pyinstaller==3.6`
 	`pip install pypiwin32`
 4. Build executable:
+
 	`pyinstaller main.py --onefile`
 
 
