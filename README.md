@@ -60,6 +60,7 @@ Future work:
 - Option to bruteforce Lockbit integers so that the user does not have to supply an integer to the correct variable.
 - Add more ransomware variants.
 - Extract ransomware configuration, such as an actor ID from REvil. Similar to: https://blog.kartone.ninja/2020/10/29/project-sodinokibi/
+- Create test cases to prevent breaking of functionality.
 
 Eerste: COa1JNLFTtIkqmUBdBvMQhwq/sNv6UuZ0Z4GJl98bwY=
 OB: fw3wr42KGihNMzIqQ1befcTRrDEYM2dKhAXVaLITjyE=
