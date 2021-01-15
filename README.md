@@ -34,6 +34,7 @@ https://nuitka.net/
 	venv\Scripts\activate
 3. Install PyInstaller version 3.6 (last version for python2.7 support!):
 pip install pyinstaller==3.6
+pip install pypiwin32
 4. Build executable:
 pyinstaller main.py
 
