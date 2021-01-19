@@ -1,11 +1,11 @@
 import ConfigParser
 import os.path
+import sys
 import Helpers
 import LogUtils
 import CONSTS
 from termcolor import *
 import colorama
-
 
 if __name__ == '__main__':
     colorama.init()
@@ -20,6 +20,10 @@ if __name__ == '__main__':
         CONSTS.key_path = config.get("Parameters", "key_path")
         log_file = config.get("Parameters", "log_file")
 
+        # Override decryption start
+        if len(sys.argv) > 1:
+            decryption_start = sys.argv[1]
+            cprint("Overriding decryption start to: " + decryption_start, 'green')
         # Read ransomware specific details:
         config.read("configs/" + active_ransomware)
         extension = config.get(active_ransomware, "Extension")
@@ -32,6 +36,7 @@ if __name__ == '__main__':
         LogUtils.write_log(log_file, "Methodology: " + str(methodology))
 
         error_files = []
+        success_counter = 0
         successful = False
 
         cprint("Decryptor start", 'green')
@@ -40,7 +45,8 @@ if __name__ == '__main__':
             for filename in [f for f in filenames if f.endswith(extension)]:
                 if not dirpath.__contains__("$Recycle.Bin"):
                     f = os.path.join(dirpath, filename)
-                    # f = r"C:\filesss\merged lockbit files\nwcrypter\hmd-ad-licentie.csv.lockbit"
+                    # Escape 255 path limit in Windows:
+                    f = "\\\\?\\%s" % f
                     # Execute tasks:
                     for method in methodology:
                         LogUtils.write_log(log_file, method + " start.")
@@ -52,25 +58,28 @@ if __name__ == '__main__':
                             successful = True
                         else:
                             # Error handling:
-                            error_files.append(f)
+
                             LogUtils.write_log(log_file, "ERROR: " + method + " in file " + f)
                             successful = False
                             break
 
                     # Write event logs if successful:
                     if successful:
-                        cprint("Decrypted " + f, 'white')
+                        cprint("Decrypted " + f[4:], 'white')
+                        success_counter += 1
                         LogUtils.write_log(log_file, "Decryption of " + str(f) + " successful")
+                        if delete_ransom_files == 'True':
+                            if os.path.exists(f):
+                                os.remove(f)
                         successful = False
 
-        # If there are any files not decrypted write event logs:
+        # Print statistics and write to logs:
+        LogUtils.write_log(log_file, "Decrypted " + str(success_counter) + " files!")
+        cprint("Decrypted " + str(success_counter) + " files!", 'green')
         if len(error_files) > 0:
             LogUtils.write_log(log_file, "The following files are not decrypted: " + str(error_files))
             cprint("Error decrypting file(s):", 'red')
             print(error_files)
-        else:
-            LogUtils.write_log(log_file, "Decryption completed!")
-            cprint("\nDecryption completed!", 'green')
 
     # Catch config exceptions:
     except ConfigParser.NoSectionError as e:
