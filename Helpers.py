@@ -32,7 +32,7 @@ def determine_method(active_ransomware, f, method, log_file):
             retval = validate_crc32(crc_1_hash, crc_1_data)
             return retval
         except Exception as e:
-            LogUtils.write_log(log_file, e)
+            LogUtils.write_log(log_file, str(e))
         return False
     elif method == "CRC_2":
         try:
@@ -46,7 +46,7 @@ def determine_method(active_ransomware, f, method, log_file):
             retval = validate_crc32(crc_2_hash, crc_2_data)
             return retval
         except Exception as e:
-            LogUtils.write_log(log_file, e)
+            LogUtils.write_log(log_file, str(e))
         return False
     elif method == "CRC_3":
         try:
@@ -60,7 +60,7 @@ def determine_method(active_ransomware, f, method, log_file):
             retval = validate_crc32(crc_3_hash, crc_3_data)
             return retval
         except Exception as e:
-            LogUtils.write_log(log_file, e)
+            LogUtils.write_log(log_file, str(e))
         return False
     elif method == "Master_sk":
         try:
